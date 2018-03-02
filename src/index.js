@@ -1,22 +1,32 @@
 module.exports = function getZerosCount(number, base) {
-     var i = 1, count = 0;
-     var simpleDel = [], del = 2;
-     var numberDel = base;
-     while(numberDel>1){
-         if(numberDel%del==0) {
-             simpleDel.push(del);
-             numberDel /=del;
-         }
-         else del ++;
-     }
-     var mainDel = simpleDel[simpleDel.length-1];
-     var stepen = 0;
-     simpleDel.forEach(function(el){
-         if(el == mainDel) stepen++;
-     });
-      while(Math.pow(mainDel,i)<number){
-          count+=Math.floor(number /Math.pow(mainDel,i));
-          i++;
-      }
-      return Math.floor(count/stepen);
+    function toSimpleObject(num){
+            var object = {};
+            var count = 2;
+            while (num > 1) {
+                if (num % count === 0) {
+                    if(object[count] === undefined) {
+                        object[count] = 1;
+                    }
+                    else object[count] += 1;
+                    num /= count;
+                }
+                else count++;
+            }
+            return object;
+        }
+
+    var i = 1, count = 0;
+    var result = [];
+    var simpleDel = toSimpleObject(base);
+
+    for(var prop in simpleDel) {
+        i = 1;
+        count = 0;
+        while (Math.pow(prop, i) < number) {
+            count += Math.floor(number / Math.pow(prop, i));
+            i++;
+        }
+        result.push(Math.floor(count/simpleDel[prop]));
+    }
+    return Math.min.apply(null, result);
 }
